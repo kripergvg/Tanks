@@ -12,14 +12,14 @@ namespace Tanks.Tank.Abilities
 
         private Quaternion ShotRotationConvered;
 
-        public override void Fire(ref AbilityContext context)
+        public override void Fire(in AbilityContext context)
         {
             // TODO Pool
             var missile = Instantiate(MissilePrefab, context.TowerEnd.position, context.TowerEnd.rotation);
             var direction = ShotRotationConvered * Vector3.forward;
             var force= context.RootTransform.TransformVector(direction) * ForceImpulse;
             // Debug.DrawRay(context.TowerEnd.position, direction, Color.blue, 10);
-            missile.Fire(force);
+            missile.Fire(force, TargetsMask);
         }
 
         private void OnEnable()

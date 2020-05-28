@@ -1,5 +1,6 @@
 using System;
 using Tanks.Mobs;
+using Tanks.Mobs.Brain.FSMBrain;
 using Tanks.Tank.Abilities;
 using UnityEngine;
 
@@ -25,14 +26,21 @@ namespace Tanks.Tank
         private int _frameCountDelta;
         private AbilitySystem _abilitySystem;
         private float? _lastChangedAbilityTime;
+        private AbilityContext _abilityContext;
 
         public override EntityType EntityType { get; } = EntityType.Tank;
-        
-        public void Init(AbilitySystem abilitySystem, Transform abilitiesContainer, MainCameraStorage mainCameraStorage)
+
+        public void Init(HealthSystem healthSystem,
+            AbilitySystem abilitySystem,
+            Transform abilitiesContainer,
+            MainCameraStorage mainCameraStorage)
         {
             mainCameraStorage.Set(PlayerCamera);
             _abilitySystem = abilitySystem;
             abilitySystem.Init(Abilities, new ToParentFactory<AbilityUi, IAbilityUi>(AbilityUiPrefab, abilitiesContainer));
+
+            _abilityContext = new AbilityContext(transform, TowerEnd);
+            base.Init(healthSystem);
         }
 
         // Update is called once per frame
@@ -47,8 +55,7 @@ namespace Tanks.Tank
 
             if (Input.GetKey(KeyCode.X))
             {
-                var context = new AbilityContext(transform, TowerEnd);
-                _abilitySystem.Fire(ref context);
+                _abilitySystem.Fire(in _abilityContext);
             }
 
             if (_lastChangedAbilityTime == null

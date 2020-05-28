@@ -9,7 +9,16 @@ namespace Tanks.Mobs
         Vector3 Position { get; set; }
 
         Quaternion Rotation { get; set; }
+        
+        int MaxHealth { get; }
+        
+        float Armour { get; }
 
-        void OnDespawn();
+        void TakeDamage(float damage);
+
+        void BeforeDestroyEntity();
+
+        void DestroyEntity();
+
     }
 }

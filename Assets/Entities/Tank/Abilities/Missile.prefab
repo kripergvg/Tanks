@@ -107,7 +107,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8b4ff1150c4e0aa6cfd1fc998727e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _body: {fileID: 8550098277433292753}
+  Body: {fileID: 8550098277433292753}
+  ExplosionRadius: 4
+  TargetsMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  Damage: 40
+  LiveTime: 5
 --- !u!54 &8550098277433292753
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -68,17 +68,4 @@ namespace Tanks
             return _random.Next(max);
         }
     }
-
-    public interface IEntityDestroyer
-    {
-        void Destory(IEntity entity);
-    }
-
-    public class UnityEntityDestroyer : IEntityDestroyer
-    {
-        public void Destory(IEntity entity)
-        {
-            Object.Destroy((Object)entity);
-        }
-    }
 }

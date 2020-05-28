@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Tanks.FSM;
 using Tanks.Mobs;
+using Tanks.Mobs.Brain.FSMBrain;
 using Tanks.Tank;
 using UnityEngine;
 using Random = System.Random;
@@ -19,17 +21,24 @@ namespace Tanks.DI
             _deps = GetDeps(sceneNodes);
             var random = new DefaultRandom(new Random());
 
-            var entitiesDestroyer = new UnityEntityDestroyer();
-            var entitiesSpawner = new EntitiesSpawner(entitiesDestroyer);
+            var tankMobTargetLocator = new TypeTargetLocator(EntityType.Tank);
+            var targetLocators = new List<ITargetLocator>
+            {
+                tankMobTargetLocator
+            };
+
+            var entitiesSpawner = new EntitiesSpawner(targetLocators);
             var timeProvider = new UnityTimeProvider();
 
-            var tankFactory = new TankFactory(timeProvider, TankPrefab, _deps.AbilitiesContainer);
+            var stateMachineFactory = new StateMachineFactory();
+            
+            var tankFactory = new TankFactory(timeProvider, entitiesSpawner, TankPrefab, _deps.AbilitiesContainer);
             entitiesSpawner.Spawn<TankFactory, TankViewModel>(tankFactory, _deps.PlayerSpawnPoint.position, _deps.PlayerSpawnPoint.rotation);
 
             var zombieFactories = new List<ZombieFactory>();
-            foreach (var zombyPrefab in Zombies)
+            foreach (var zombiePrefab in Zombies)
             {
-                var zombieFactory = new ZombieFactory(zombyPrefab);
+                var zombieFactory = new ZombieFactory(timeProvider, entitiesSpawner, zombiePrefab, tankMobTargetLocator, stateMachineFactory);
                 zombieFactories.Add(zombieFactory);
             }
 

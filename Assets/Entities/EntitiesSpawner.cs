@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using Tanks.Mobs.Brain.FSMBrain;
 using UnityEngine;
 
 namespace Tanks.Mobs
 {
     public class EntitiesSpawner : IEntityLocator, IEntityLifeManager
     {
-        private readonly IEntityDestroyer _destroyer;
+        private readonly List<ITargetLocator> _targetLocators;
         private readonly Dictionary<IEntity, EntityInfo> _entitiesWithInfo = new Dictionary<IEntity, EntityInfo>();
         private readonly List<IEntity> _entitiesForLocator = new List<IEntity>();
         
         private readonly EntityDeps _entityDeps;
 
-        public EntitiesSpawner(IEntityDestroyer destroyer)
+        public EntitiesSpawner(List<ITargetLocator> targetLocators)
         {
-            _destroyer = destroyer;
+            _targetLocators = targetLocators;
             _entityDeps = new EntityDeps(this, new MainCameraStorage());
         }
 
@@ -30,17 +31,23 @@ namespace Tanks.Mobs
             var entity = entityFactory.Create(in _entityDeps);
             entity.Position = position;
             entity.Rotation = rotation;
+            
+            foreach (var targetLocator in _targetLocators)
+            {
+                targetLocator.TryAddTarget(entity);
+            }
+            
             _entitiesWithInfo.Add(entity, new EntityInfo(onDespawn));
             return entity;
         }
 
         public void DeSpawn(IEntity entity)
         {
-            entity.OnDespawn();
+            entity.BeforeDestroyEntity();
             var entityInfo = _entitiesWithInfo[entity];
             entityInfo.OnDespawn?.Invoke();
             _entitiesWithInfo.Remove(entity);
-            _destroyer.Destory(entity);
+            entity.DestroyEntity();
         }
         
         private readonly struct EntityInfo

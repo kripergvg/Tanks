@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8395682961219085592}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,8 +43,7 @@ GameObject:
   - component: {fileID: 4130900074042312992}
   - component: {fileID: 1847612785912945219}
   - component: {fileID: 902917430413763175}
-  - component: {fileID: 4944815626525086927}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,18 +130,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &4944815626525086927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2553612409767200020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9e4cd62aef908449b2b58d64c9c7e99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5188642196291814664
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,8 +141,7 @@ GameObject:
   - component: {fileID: 3447094421728805211}
   - component: {fileID: 3761412731863060664}
   - component: {fileID: 8307366443097480303}
-  - component: {fileID: 3317473176078863535}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,20 +209,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &3317473176078863535
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5188642196291814664}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8214707255546483666
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,7 +220,9 @@ GameObject:
   - component: {fileID: 3109957337094131397}
   - component: {fileID: 9110450230460972203}
   - component: {fileID: 5694824039739539656}
-  m_Layer: 0
+  - component: {fileID: 7714953869562195621}
+  - component: {fileID: 6258394638351971059}
+  m_Layer: 10
   m_Name: BigZombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -305,7 +279,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e72f5f77c2747c6bb9a0d0a6b307d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ui: {fileID: 4944815626525086927}
+  MaxHealth: 500
+  Armour: 0.2
+  UiCanvas: {fileID: 4130900074042312992}
+  HealthSlider: {fileID: 1296412000231099170}
+  Agent: {fileID: 9110450230460972203}
+  BrainUpdateInterval: 0.02
+  AttackDistance: 1
+--- !u!136 &7714953869562195621
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8214707255546483666}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5063276
+  m_Height: 2.0136995
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.0026242733, z: 0.006327629}
+--- !u!54 &6258394638351971059
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8214707255546483666}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &2676922280259658844
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -313,6 +323,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 941792577878064054}
     m_Modifications:
+    - target: {fileID: 3808797862736832467, guid: bdf0c13086893644b82ea626044a46a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3808797862736832468, guid: bdf0c13086893644b82ea626044a46a6,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -327,6 +342,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Health
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808797862815379324, guid: bdf0c13086893644b82ea626044a46a6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3808797862815379325, guid: bdf0c13086893644b82ea626044a46a6,
         type: 3}
@@ -441,3 +461,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2676922280259658844}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1296412000231099170 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3808797862815379326, guid: bdf0c13086893644b82ea626044a46a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2676922280259658844}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -15,6 +15,9 @@ MonoBehaviour:
   Name: Missile
   Icon: {fileID: 21300000, guid: 853bbd8a19561b843b70175bfefef518, type: 3}
   Cooldown: 1
+  TargetsMask:
+    serializedVersion: 2
+    m_Bits: 1024
   MissilePrefab: {fileID: 6171470304695887012, guid: 96f64fe1b74a403e91887bf011ff57c6,
     type: 3}
   ForceImpulse: 5

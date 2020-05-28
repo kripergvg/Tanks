@@ -28,14 +28,14 @@ namespace Tanks.Tank.Abilities
             }
         }
 
-        public void Fire(ref AbilityContext context)
+        public void Fire(in AbilityContext context)
         {
             var newFireDate = _timeProvider.Time;
             var ability = _abilities[_selectedAbility];
             if (ability.LastFireDate == null 
                 || newFireDate - ability.LastFireDate > ability.AbilityMetaInfo.Cooldown)
             {
-                ability.AbilityMetaInfo.Fire(ref context);
+                ability.AbilityMetaInfo.Fire(in context);
                 ability.UiElement.SetFireDate(newFireDate);
                 _abilities[_selectedAbility] = new AbilityInfo(ability, newFireDate);
             }

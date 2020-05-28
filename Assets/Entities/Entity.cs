@@ -4,8 +4,22 @@ namespace Tanks.Mobs
 {
     public abstract class Entity : MonoBehaviour, IEntity
     {
-        public abstract EntityType EntityType { get; }
+        private HealthSystem _healthSystem;
 
+        public int MaxHealth = 100;
+        public float Armour = 0.2f;
+        
+        public void Init(HealthSystem healthSystem)
+        {
+            _healthSystem = healthSystem;
+        }
+
+        public abstract EntityType EntityType { get; }
+        
+        int IEntity.MaxHealth => MaxHealth;
+
+        float IEntity.Armour => Armour;
+        
         public Vector3 Position
         {
             get => transform.position;
@@ -18,8 +32,18 @@ namespace Tanks.Mobs
             set => transform.rotation = value;
         }
 
-        public virtual void OnDespawn()
+        public void TakeDamage(float damage)
+        { 
+            _healthSystem.TakeDamage(damage);
+        }
+
+        public virtual void BeforeDestroyEntity()
         {
+        }
+
+        public void DestroyEntity()
+        {
+            Destroy(gameObject);
         }
     }
 }

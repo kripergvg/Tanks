@@ -15,3 +15,8 @@ MonoBehaviour:
   Name: Gun
   Icon: {fileID: 21300000, guid: 79e6413acc59d904a94d2b5b15cd7a4c, type: 3}
   Cooldown: 0.01
+  TargetsMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  MaxDistance: 20
+  Damage: 4
