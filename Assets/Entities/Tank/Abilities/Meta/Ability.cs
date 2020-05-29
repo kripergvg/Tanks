@@ -12,11 +12,12 @@ namespace Tanks.Tank.Abilities
         
         public LayerMask TargetsMask;
 
+        public bool ShowCooldow = true;
+
         string IAbility.Name => Name;
         Sprite IAbility.Icon => Icon;
         float IAbility.Cooldown => Cooldown;
-        
-        public abstract void Fire(in AbilityContext context);
+        bool IAbility.ShowCooldown => ShowCooldow;
     }
 
     public interface IAbility
@@ -24,6 +25,6 @@ namespace Tanks.Tank.Abilities
         string Name { get; }
         Sprite Icon { get; }
         float Cooldown { get; }
-        void Fire(in AbilityContext context);
+        bool ShowCooldown { get; }
     }
 }

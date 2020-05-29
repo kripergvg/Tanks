@@ -13,12 +13,18 @@ namespace Tanks
     {
         float Time { get; }
     }
-    
+
     public interface IEntityFactory<out T>
+        where T : IEntity
     {
         T Create(in EntityDeps deps);
     }
-    
+
+    public interface IEntityRemover
+    {
+        void Remove(IEntity entity);
+    }
+
     public interface IFactory<out T>
     {
         T Create();

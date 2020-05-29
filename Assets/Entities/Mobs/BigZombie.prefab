@@ -237,7 +237,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8214707255546483666}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.87, z: 4.22}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 941792577878064054}
@@ -264,8 +264,8 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.8
-  m_BaseOffset: 0.75
-  m_WalkableMask: 4294967295
+  m_BaseOffset: 0.92
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &5694824039739539656
 MonoBehaviour:
@@ -279,13 +279,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e72f5f77c2747c6bb9a0d0a6b307d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 500
+  MaxHealth: 300
   Armour: 0.2
   UiCanvas: {fileID: 4130900074042312992}
   HealthSlider: {fileID: 1296412000231099170}
   Agent: {fileID: 9110450230460972203}
   BrainUpdateInterval: 0.02
-  AttackDistance: 1
+  AttackInterval: 0.5
+  Damage: 10
 --- !u!136 &7714953869562195621
 CapsuleCollider:
   m_ObjectHideFlags: 0

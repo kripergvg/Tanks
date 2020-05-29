@@ -20,7 +20,7 @@ namespace Tanks.Mobs
 
         float IEntity.Armour => Armour;
         
-        public Vector3 Position
+        public virtual Vector3 Position
         {
             get => transform.position;
             set => transform.position = value;
@@ -32,18 +32,17 @@ namespace Tanks.Mobs
             set => transform.rotation = value;
         }
 
+        public virtual void OnSpawn()
+        {
+        }
+
         public void TakeDamage(float damage)
         { 
             _healthSystem.TakeDamage(damage);
         }
 
-        public virtual void BeforeDestroyEntity()
+        public virtual void BeforeDespawnEntity()
         {
-        }
-
-        public void DestroyEntity()
-        {
-            Destroy(gameObject);
         }
     }
 }

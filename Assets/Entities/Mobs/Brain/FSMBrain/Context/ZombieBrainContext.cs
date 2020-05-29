@@ -2,8 +2,10 @@ namespace Tanks.Mobs.Brain.FSMBrain
 {
     public struct ZombieBrainContext
     {
-        public bool Reached;
+        public bool TargetReached;
 
         public IEntity Target;
+
+        public bool IsInsideScene;
     }
 }

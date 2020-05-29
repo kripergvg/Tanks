@@ -9,24 +9,29 @@ namespace Tanks.Tank.Abilities
     {
         public Image IconElement;
         public TMP_Text NameElement;
-        public Image SelectedHover;
+        public Image NotSelectedHover;
         
         private float? _lastFireDate;
         private float _cooldown;
+        private bool _showCooldown;
 
-        public void Init(Sprite icon, string name, float cooldown)
+        public void Init(Sprite icon, string name, float cooldown, bool showCooldown)
         {
             IconElement.sprite = icon;
             NameElement.text = name;
             _cooldown = cooldown;
+            _showCooldown = showCooldown;
         }
 
         private void Update()
         {
-            if (_lastFireDate != null)
+            if (_showCooldown)
             {
-                var timeAfterLastShoot = Time.time - _lastFireDate.Value;
-                IconElement.fillAmount = Math.Min(1, timeAfterLastShoot / _cooldown);
+                if (_lastFireDate != null)
+                {
+                    var timeAfterLastShoot = Time.time - _lastFireDate.Value;
+                    IconElement.fillAmount = Math.Min(1, timeAfterLastShoot / _cooldown);
+                }
             }
         }
 
@@ -37,13 +42,12 @@ namespace Tanks.Tank.Abilities
 
         public void SetSelected()
         {
-            SelectedHover.enabled = true;
+            NotSelectedHover.enabled = false;
         }
 
         public void RemoveSelected()
         {
-            SelectedHover.enabled = false;
+            NotSelectedHover.enabled = true;
         }
-            
     }
 }

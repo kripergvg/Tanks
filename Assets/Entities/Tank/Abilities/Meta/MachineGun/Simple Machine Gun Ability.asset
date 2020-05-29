@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048dae034eda4bc499fb088696018dbe, type: 3}
   m_Name: Simple Machine Gun Ability
   m_EditorClassIdentifier: 
-  Name: Gun
-  Icon: {fileID: 21300000, guid: 79e6413acc59d904a94d2b5b15cd7a4c, type: 3}
+  Name: Laser
+  Icon: {fileID: 21300000, guid: 41369bdbd67134a47b5fa4bb2a6f9e5a, type: 3}
   Cooldown: 0.01
   TargetsMask:
     serializedVersion: 2
     m_Bits: 1024
+  ShowCooldow: 0
   MaxDistance: 20
   Damage: 4

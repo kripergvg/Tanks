@@ -109,11 +109,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Body: {fileID: 8550098277433292753}
   ExplosionRadius: 4
-  TargetsMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  Damage: 40
-  LiveTime: 5
+  Damage: 80
+  MaxLiveTime: 5
 --- !u!54 &8550098277433292753
 Rigidbody:
   m_ObjectHideFlags: 0

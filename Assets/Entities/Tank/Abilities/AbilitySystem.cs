@@ -1,30 +1,39 @@
-using UnityEngine;
-
 namespace Tanks.Tank.Abilities
 {
     public class AbilitySystem
     {
         private readonly ITimeProvider _timeProvider;
+        private readonly IRuntimeAbilityFactory _runtimeAbilityFactory;
+        private readonly float _changeAbilityCooldown;
 
         private AbilityInfo[] _abilities;
         private int _selectedAbility;
+        private float? _lastTimeChangeAbility;
 
-        public AbilitySystem(ITimeProvider timeProvider)
+        public AbilitySystem(ITimeProvider timeProvider, IRuntimeAbilityFactory runtimeAbilityFactory, float changeAbilityCooldown)
         {
             _timeProvider = timeProvider;
+            _runtimeAbilityFactory = runtimeAbilityFactory;
+            _changeAbilityCooldown = changeAbilityCooldown;
         }
 
-        public void Init<TPrefabInstantiator>(IAbility[] abilities, TPrefabInstantiator abilityUiInstantiator)
+        public void Init<TPrefabInstantiator>(IAbility[] abilities, TPrefabInstantiator abilityUiInstantiator, in TankDeps tankDeps)
             where TPrefabInstantiator : IFactory<IAbilityUi>
         {
             _abilities = new AbilityInfo[abilities.Length];
             for (var abilityIndex = 0; abilityIndex < abilities.Length; abilityIndex++)
             {
                 var ability = abilities[abilityIndex];
+                var runtimeAbility = _runtimeAbilityFactory.Create(ability, tankDeps);
                 var abilityUi = abilityUiInstantiator.Create();
-                abilityUi.Init(ability.Icon, ability.Name, ability.Cooldown);
+                abilityUi.Init(ability.Icon, ability.Name, ability.Cooldown, ability.ShowCooldown);
 
-                _abilities[abilityIndex] = new AbilityInfo(ability, abilityUi, null);
+                _abilities[abilityIndex] = new AbilityInfo(ability, abilityUi, runtimeAbility, null);
+            }
+
+            if (_abilities.Length > 0)
+            {
+                SetSelected(0);
             }
         }
 
@@ -35,7 +44,7 @@ namespace Tanks.Tank.Abilities
             if (ability.LastFireDate == null 
                 || newFireDate - ability.LastFireDate > ability.AbilityMetaInfo.Cooldown)
             {
-                ability.AbilityMetaInfo.Fire(in context);
+                ability.RuntimeAbility.Fire(in context);
                 ability.UiElement.SetFireDate(newFireDate);
                 _abilities[_selectedAbility] = new AbilityInfo(ability, newFireDate);
             }
@@ -43,29 +52,47 @@ namespace Tanks.Tank.Abilities
 
         public void NextAbility()
         {
-            var nextAbilityIndex = _selectedAbility + 1;
-            if (nextAbilityIndex == _abilities.Length)
+            if (CanChangeAbility())
             {
-                nextAbilityIndex = 0;
-            }
+                var nextAbilityIndex = _selectedAbility + 1;
+                if (nextAbilityIndex == _abilities.Length)
+                {
+                    nextAbilityIndex = 0;
+                }
             
-            ChangeAbility(nextAbilityIndex);
+                ChangeAbility(nextAbilityIndex);
+            }
         }
 
         public void PreviousAbility()
         {
-            var previousAbilityIndex = _selectedAbility - 1;
-            if (previousAbilityIndex == -1)
+            if (CanChangeAbility())
             {
-                previousAbilityIndex = _abilities.Length - 1;
-            }
+                var previousAbilityIndex = _selectedAbility - 1;
+                if (previousAbilityIndex == -1)
+                {
+                    previousAbilityIndex = _abilities.Length - 1;
+                }
 
-            ChangeAbility(previousAbilityIndex);
+                ChangeAbility(previousAbilityIndex);
+            }
+        }
+
+        private bool CanChangeAbility()
+        {
+            return _lastTimeChangeAbility == null
+                   || _timeProvider.Time - _lastTimeChangeAbility > _changeAbilityCooldown;
         }
 
         private void ChangeAbility(int newAbilityIndex)
         {
             _abilities[_selectedAbility].UiElement.RemoveSelected();
+            SetSelected(newAbilityIndex);
+            _lastTimeChangeAbility = _timeProvider.Time;
+        }
+
+        private void SetSelected(int newAbilityIndex)
+        {
             _abilities[newAbilityIndex].UiElement.SetSelected();
             _selectedAbility = newAbilityIndex;
         }
@@ -73,19 +100,21 @@ namespace Tanks.Tank.Abilities
         private readonly struct AbilityInfo
         {
             public AbilityInfo(AbilityInfo abilityInfo, float fireDate)
-                : this(abilityInfo.AbilityMetaInfo, abilityInfo.UiElement, fireDate)
+                : this(abilityInfo.AbilityMetaInfo, abilityInfo.UiElement, abilityInfo.RuntimeAbility, fireDate)
             {
             }
 
-            public AbilityInfo(IAbility abilityMetaInfo, IAbilityUi uiElement, float? lastFireDate)
+            public AbilityInfo(IAbility abilityMetaInfo, IAbilityUi uiElement, IRuntimeAbility runtimeAbility,  float? lastFireDate)
             {
                 AbilityMetaInfo = abilityMetaInfo;
                 UiElement = uiElement;
+                RuntimeAbility = runtimeAbility;
                 LastFireDate = lastFireDate;
             }
 
             public IAbility AbilityMetaInfo { get; }
             public IAbilityUi UiElement { get; }
+            public IRuntimeAbility RuntimeAbility { get; }
             public float? LastFireDate { get; }
         }
     }

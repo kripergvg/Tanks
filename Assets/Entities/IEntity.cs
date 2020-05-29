@@ -14,11 +14,10 @@ namespace Tanks.Mobs
         
         float Armour { get; }
 
+        void OnSpawn();
+
         void TakeDamage(float damage);
 
-        void BeforeDestroyEntity();
-
-        void DestroyEntity();
-
+        void BeforeDespawnEntity();
     }
 }

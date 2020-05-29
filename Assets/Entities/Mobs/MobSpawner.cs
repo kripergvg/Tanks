@@ -3,20 +3,20 @@ using UnityEngine;
 
 namespace Tanks.Mobs
 {
-    public class MobSpawner<TPrefabInstantiator> 
-        where TPrefabInstantiator : IEntityFactory<IEntity>
+    public class MobSpawner<TEntityFactory> 
+        where TEntityFactory : IEntityFactory<IEntity>, IEntityRemover
     {
         private readonly IRandom _random;
         private readonly IEntityLifeManager _entityLifeManager;
         private readonly MobSpawnerSettings _settings;
-        private readonly List<TPrefabInstantiator> _mobInstantiators;
+        private readonly List<TEntityFactory> _mobFactories;
 
-        public MobSpawner(IRandom random, IEntityLifeManager entityLifeManager, MobSpawnerSettings settings, List<TPrefabInstantiator> mobInstantiators)
+        public MobSpawner(IRandom random, IEntityLifeManager entityLifeManager, MobSpawnerSettings settings, List<TEntityFactory> mobFactories)
         {
             _random = random;
             _entityLifeManager = entityLifeManager;
             _settings = settings;
-            _mobInstantiators = mobInstantiators;
+            _mobFactories = mobFactories;
         }
 
         public void Start()
@@ -32,10 +32,10 @@ namespace Tanks.Mobs
             var spawnPointIndex = _random.Next(_settings.SpawnPoints.Length);
             var spawnPoint = _settings.SpawnPoints[spawnPointIndex];
 
-            var instantiatorIndex = _random.Next(_mobInstantiators.Count);
-            var instantiator = _mobInstantiators[instantiatorIndex];
+            var mobFactoryIndex = _random.Next(_mobFactories.Count);
+            var mobFactory = _mobFactories[mobFactoryIndex];
 
-            _entityLifeManager.Spawn<TPrefabInstantiator, IEntity>(instantiator, spawnPoint, Quaternion.identity, OnDespawn);
+            _entityLifeManager.Spawn<TEntityFactory, TEntityFactory, IEntity>(mobFactory, mobFactory, spawnPoint, Quaternion.identity, OnDespawn);
         }
 
         private void OnDespawn()

@@ -6,5 +6,6 @@ namespace Tanks.DI
     {
         public Transform TankSpawnPoint;
         public Transform[] ZombieSpawnPoints;
+        public Door[] Doors;
     }
 }

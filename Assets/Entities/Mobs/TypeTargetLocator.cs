@@ -20,6 +20,14 @@ namespace Tanks.Mobs
             }
         }
 
+        public void TryRemoveTarget(IEntity entity)
+        {
+            if (entity == _entity)
+            {
+                _entity = null;
+            }
+        }
+
         public IEntity GetTarget()
         {
             return _entity;

@@ -1,8 +1,10 @@
 using System;
+using Entities.Tank.Abilities.Meta.MachineGun;
 using Tanks.Mobs;
 using Tanks.Mobs.Brain.FSMBrain;
 using Tanks.Tank.Abilities;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tanks.Tank
 {
@@ -10,35 +12,44 @@ namespace Tanks.Tank
     {
         public Ability[] Abilities;
         public AbilityUi AbilityUiPrefab;
-        public float ChangeAbilityCooldown = 0.1f;
         public Camera PlayerCamera;
         public int Speed = 2;
-        public int RotationSpeed = 2;
+        public float RotationSpeed = 1.6f;
+        
         public Rigidbody RigidBody;
         public Transform TowerEnd;
+        public LineRenderer MachineGunLineRenderer;
+        public float MachineGunLineDuration = 0.1f;
         
-        private int _leftRotatePressedCount;
-        private int _rightRotatePressedCount;
-        private int _forwardPressedCount;
-        private int _backPressedCount;
-
-        private int _lastFixedUpdateFrameCount;
-        private int _frameCountDelta;
         private AbilitySystem _abilitySystem;
-        private float? _lastChangedAbilityTime;
+        private HealthSystem _healthSystem;
         private AbilityContext _abilityContext;
+        private Slider _playerHealth;
+        private InputManager _inputManager;
+        private MachineGunVisualizer _machineGunVisualizer;
 
         public override EntityType EntityType { get; } = EntityType.Tank;
 
         public void Init(HealthSystem healthSystem,
             AbilitySystem abilitySystem,
             Transform abilitiesContainer,
-            MainCameraStorage mainCameraStorage)
+            MainCameraStorage mainCameraStorage,
+            Slider playerHealth,
+            InputManager inputManager)
         {
-            mainCameraStorage.Set(PlayerCamera);
+            _healthSystem = healthSystem;
+            _playerHealth = playerHealth;
             _abilitySystem = abilitySystem;
-            abilitySystem.Init(Abilities, new ToParentFactory<AbilityUi, IAbilityUi>(AbilityUiPrefab, abilitiesContainer));
+            _machineGunVisualizer = new MachineGunVisualizer(MachineGunLineRenderer, MachineGunLineDuration);
+            var deps = new TankDeps(_machineGunVisualizer);
+            abilitySystem.Init(Abilities, new ToParentFactory<AbilityUi, IAbilityUi>(AbilityUiPrefab, abilitiesContainer), in deps);
+            mainCameraStorage.Set(PlayerCamera);
 
+            _inputManager = inputManager;
+            inputManager.OnAbilityPressed += () => { _abilitySystem.Fire(in _abilityContext); };
+            inputManager.OnNextAbilityPressed += _abilitySystem.NextAbility;
+            inputManager.OnPreviousAbilityPressed += _abilitySystem.PreviousAbility;
+            
             _abilityContext = new AbilityContext(transform, TowerEnd);
             base.Init(healthSystem);
         }
@@ -46,76 +57,51 @@ namespace Tanks.Tank
         // Update is called once per frame
         void Update()
         {
-            // TODO Поворачивать нуэно стрелками 
-            ReceiveInput(KeyCode.LeftArrow, ref _leftRotatePressedCount);
-            ReceiveInput(KeyCode.RightArrow, ref _rightRotatePressedCount);
-            ReceiveInput(KeyCode.UpArrow, ref _forwardPressedCount);
-            // TODO При движении назад повороты не в ту сторону
-            ReceiveInput(KeyCode.DownArrow, ref _backPressedCount);
-
-            if (Input.GetKey(KeyCode.X))
-            {
-                _abilitySystem.Fire(in _abilityContext);
-            }
-
-            if (_lastChangedAbilityTime == null
-                || Time.time - _lastChangedAbilityTime > ChangeAbilityCooldown)
-            {
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    _abilitySystem.PreviousAbility();
-                    _lastChangedAbilityTime = Time.time;
-                }
-
-                if (Input.GetKey(KeyCode.W))
-                {
-                    _abilitySystem.NextAbility();
-                    _lastChangedAbilityTime = Time.time;
-                }
-            }
+            _machineGunVisualizer.Update();
+            _inputManager.ReadInput();
         }
-
-        private void ReceiveInput(KeyCode keyCode, ref int counter)
-        {
-            if (Input.GetKey(keyCode))
-            {
-                counter++;
-            }
-        }
-
-        // TODO Отрефакторить
-        private void ClearInput(ref int counter)
-        {
-            counter = 0;
-        }
-
+        
         private void FixedUpdate()
         {
-            _frameCountDelta = Time.frameCount - _lastFixedUpdateFrameCount;
-            if (_frameCountDelta == 0)
-            {
-                return;
-            }
-
-            var verticalValue = GetInputValue(_forwardPressedCount, _backPressedCount);
+            var movementData = _inputManager.GetMovementData();
+            _inputManager.ClearMovementData();
+            var verticalValue = GetInputValue(movementData.Forward, movementData.Backwards);
             var movement = transform.forward * (verticalValue * Speed);
             RigidBody.velocity = new Vector3(movement.x, RigidBody.velocity.y, movement.z);
 
-            var horizontalValue = GetInputValue(_rightRotatePressedCount, _leftRotatePressedCount);
+            var horizontalValue = GetInputValue(movementData.Right, movementData.Left);
+            // backwards moving
+            if (verticalValue < 0)
+            {
+                horizontalValue *= -1;
+            }
+         
             RigidBody.angularVelocity = Vector3.up * (horizontalValue * RotationSpeed);
-
-            _lastFixedUpdateFrameCount = Time.frameCount;
-
-            ClearInput(ref _leftRotatePressedCount);
-            ClearInput(ref _rightRotatePressedCount);
-            ClearInput(ref _forwardPressedCount);
-            ClearInput(ref _backPressedCount);
         }
 
-        private int GetInputValue(int positivePressedCount, int negativePressedCount)
+        private int GetInputValue(bool positivePressed, bool negativePressed)
         {
-            var diff = positivePressedCount - negativePressedCount;
-            return diff / _frameCountDelta;
+            if (positivePressed && negativePressed)
+            {
+                return 0;
+            }
+
+            if (positivePressed)
+            {
+                return 1;
+            }
+
+            if (negativePressed)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
+
+        private void LateUpdate()
+        {
+            _playerHealth.value = _healthSystem.GetHealthInPercent();
         }
     }
 }

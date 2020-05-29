@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using Tanks.FSM;
 using Tanks.Mobs;
 using Tanks.Mobs.Brain.FSMBrain;
+using Tanks.Pool;
 using Tanks.Tank;
+using Tanks.Tank.Abilities;
 using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 using Random = System.Random;
 
 namespace Tanks.DI
@@ -13,6 +17,11 @@ namespace Tanks.DI
     {
         public TankViewModel TankPrefab;
         public Zombie[] Zombies;
+        public Missile MisslePrefab;
+        
+        public int AliveZombieCount = 10;
+
+        public float ChangeAbilityCooldown = 0.1f;
         
         private StartUpDeps _deps;
 
@@ -29,22 +38,46 @@ namespace Tanks.DI
 
             var entitiesSpawner = new EntitiesSpawner(targetLocators);
             var timeProvider = new UnityTimeProvider();
+            
+            CreateTank(timeProvider, entitiesSpawner);
 
             var stateMachineFactory = new StateMachineFactory();
-            
-            var tankFactory = new TankFactory(timeProvider, entitiesSpawner, TankPrefab, _deps.AbilitiesContainer);
-            entitiesSpawner.Spawn<TankFactory, TankViewModel>(tankFactory, _deps.PlayerSpawnPoint.position, _deps.PlayerSpawnPoint.rotation);
+            var mobSpawner = CreateMobSpawner(timeProvider, entitiesSpawner, tankMobTargetLocator, stateMachineFactory, random);
+            mobSpawner.Start();
+        }
 
+        private void CreateTank(UnityTimeProvider timeProvider, EntitiesSpawner entitiesSpawner)
+        {
+            var missilePool = new SimplePool<Missile>(5, 2, p =>
+            {
+                var missile = Instantiate(MisslePrefab);
+                missile.SetPoolOwner(p);
+                return missile;
+            });
+            var runtimeAbilityFactory = new ScriptableObjectRuntimeAbilityFactory(missilePool);
+
+            var tankFactory = new TankFactory(timeProvider, entitiesSpawner, TankPrefab, _deps.AbilitiesContainer, _deps.PlayerHealth, runtimeAbilityFactory, ChangeAbilityCooldown, new InputManager());
+            entitiesSpawner.Spawn<TankFactory, TankFactory, TankViewModel>(tankFactory, tankFactory, _deps.PlayerSpawnPoint.position, _deps.PlayerSpawnPoint.rotation);
+        }
+
+        private MobSpawner<ZombieFactory> CreateMobSpawner(UnityTimeProvider timeProvider, EntitiesSpawner entitiesSpawner, TypeTargetLocator tankMobTargetLocator,
+            StateMachineFactory stateMachineFactory, DefaultRandom random)
+        {
             var zombieFactories = new List<ZombieFactory>();
             foreach (var zombiePrefab in Zombies)
             {
-                var zombieFactory = new ZombieFactory(timeProvider, entitiesSpawner, zombiePrefab, tankMobTargetLocator, stateMachineFactory);
+                var pool = new SimplePool<Zombie>(15, 10, p =>
+                {
+                    var zombie = Instantiate(zombiePrefab);
+                    return zombie;
+                });
+                var zombieFactory = new ZombieFactory(timeProvider, entitiesSpawner, tankMobTargetLocator, stateMachineFactory, _deps.Doors, pool);
                 zombieFactories.Add(zombieFactory);
             }
 
             var zombieSpawnPoints = GetZombieSpawnPoints(_deps.ZombieSpawnPoints);
-            var mobSpawner = new MobSpawner<ZombieFactory>(random, entitiesSpawner, new MobSpawnerSettings(10, zombieSpawnPoints), zombieFactories);
-            mobSpawner.Start();
+            var mobSpawner = new MobSpawner<ZombieFactory>(random, entitiesSpawner, new MobSpawnerSettings(AliveZombieCount, zombieSpawnPoints), zombieFactories);
+            return mobSpawner;
         }
 
         private Vector3[] GetZombieSpawnPoints(Transform[] zombieSpawnPoints)
@@ -54,26 +87,31 @@ namespace Tanks.DI
             {
                 zombieSpawnPointsPositions[index] = zombieSpawnPoints[index].position;
             }
-
+            
             return zombieSpawnPointsPositions;
         }
 
         private StartUpDeps GetDeps(List<SceneNode> sceneNodes)
         {
             Transform abilitiesContainer = null;
+            Slider playerHealth = null;
             Transform playerSpawnPoint = null;
             Transform[] zombieSpawnPoints = null;
+            IDoor[] doors = null;
+            
             foreach (var sceneNode in sceneNodes)
             { 
                 if (sceneNode is PlayerUiNode playerUiNode)
                 {
                     abilitiesContainer = playerUiNode.AbilitiesContainer;
+                    playerHealth = playerUiNode.HealthBar;
                 }
 
                 if (sceneNode is CoreEnvironmentNode environmentNode)
                 {
                     playerSpawnPoint = environmentNode.TankSpawnPoint;
                     zombieSpawnPoints = environmentNode.ZombieSpawnPoints;
+                    doors = environmentNode.Doors;
                 }
             }
 
@@ -82,21 +120,29 @@ namespace Tanks.DI
                 throw new Exception("abilitiesContainer not found");
             }
 
-            return new StartUpDeps(abilitiesContainer, zombieSpawnPoints, playerSpawnPoint);
+            return new StartUpDeps(abilitiesContainer, zombieSpawnPoints, playerSpawnPoint, playerHealth, doors);
         }
 
         public readonly struct StartUpDeps
         {
-            public StartUpDeps(Transform abilitiesContainer, Transform[] zombieSpawnPoints, Transform playerSpawnPoint)
+            public StartUpDeps(Transform abilitiesContainer,
+                Transform[] zombieSpawnPoints, 
+                Transform playerSpawnPoint,
+                Slider playerHealth,
+                IDoor[] doors)
             {
                 AbilitiesContainer = abilitiesContainer;
                 ZombieSpawnPoints = zombieSpawnPoints;
                 PlayerSpawnPoint = playerSpawnPoint;
+                PlayerHealth = playerHealth;
+                Doors = doors;
             }
 
             public Transform AbilitiesContainer { get; }
             public Transform[] ZombieSpawnPoints { get; }
             public Transform PlayerSpawnPoint { get; }
+            public Slider PlayerHealth { get; }
+            public IDoor[] Doors { get; }
         }
     }
 }
