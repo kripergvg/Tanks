@@ -4,12 +4,18 @@
  - CoreEnvironment - сцена с лвл дизайном
  - PlayerUI - интерфейс игрока
 
-Настройки танка хранятся в его префабе Entities/Tank/Tank
-Передвижение танка сделано за счет RigidBody (учтена интерполяция)
-Логика способностей находится в AbilitySystem
+ AI мобов реализовано за счет простой стейт машины
+
+## Настройки
+- Настройки танка хранятся в его префабе Entities/Tank/Tank
+- Передвижение танка сделано за счет RigidBody (учтена интерполяция)
+- Логика способностей находится в AbilitySystem
+
 Настройки способностей хранятся в ScriptableObject: (Entities\Tank\Abilities\Meta\Missile\SimpleMissile.asset), (Entities\Tank\Abilities\Meta\MachineGun\Simple Machine Gun Ability.asset)
+
 В текущей реализации два вида мобов 
-- BigZombie (Entities/Mobs/BigZombie) и SimpleZombie (Entities/Mobs/SimpleZombie)
+- BigZombie (Entities/Mobs/BigZombie)
+- SimpleZombie (Entities/Mobs/SimpleZombie)
 
 
 ## Что не успел
