@@ -182,7 +182,7 @@ MonoBehaviour:
   Zombies:
   - {fileID: 5694824039739539656, guid: d7c67d916e7c300438f8e8fae3d4281c, type: 3}
   - {fileID: 1660280600537085762, guid: 7df3e4e78cd8dbf43bba71ab36cc62ba, type: 3}
-  MisslePrefab: {fileID: 6171470304695887012, guid: 96f64fe1b74a403e91887bf011ff57c6,
+  MisslePrefab: {fileID: 6171470304695887012, guid: 33811c2f75ef405b99fa59a38f35799b,
     type: 3}
   AliveZombieCount: 10
   ChangeAbilityCooldown: 0.2
