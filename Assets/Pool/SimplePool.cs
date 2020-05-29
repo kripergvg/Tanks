@@ -1,17 +1,23 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Tanks.Pool
 {
     public class SimplePool<TObject> : IPool<TObject>
         where TObject : IPoolable
     {
+        private readonly ILogger _logger;
         private readonly int _maxCount;
         private readonly Func<IPool<TObject>, TObject> _factory;
         private readonly Stack<TObject> _pooledObjects;
 
-        public SimplePool(int maxCount, int startCount, Func<IPool<TObject>, TObject> factory)
+        public SimplePool(ILogger logger,
+            int maxCount, 
+            int startCount,
+            Func<IPool<TObject>, TObject> factory)
         {
+            _logger = logger;
             _maxCount = maxCount;
             _factory = factory;
             _pooledObjects = new Stack<TObject>(startCount);
@@ -24,14 +30,14 @@ namespace Tanks.Pool
 
         public TObject Get()
         {
-            TObject targetObject = default;
+            TObject targetObject;
             if (_pooledObjects.Count != 0)
             {
                 targetObject= _pooledObjects.Pop();
             }
             else
             {
-                // TODO Warning
+                _logger.LogInformation("Creating new object in pool {type}",typeof(TObject).ToString());
                 targetObject = CreateTargetObject();
             }
 
@@ -49,7 +55,7 @@ namespace Tanks.Pool
             }
             else
             {
-                // TODO Warning
+                _logger.LogWarning("Returned object doesn't fit in pool {type}",typeof(TObject).ToString());
             }
         }
 

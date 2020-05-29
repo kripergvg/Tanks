@@ -20,11 +20,8 @@ namespace Tanks.Tank.Abilities
             var transform = missile.transform;
             transform.position = context.TowerEnd.position;
             transform.rotation = context.TowerEnd.rotation;
-            // TODO Pool
-            // var missile = Instantiate(MissilePrefab, context.TowerEnd.position, context.TowerEnd.rotation);
             var direction = _missileAbilityMetaInfo.ShotRotationConvered * Vector3.forward;
             var force = context.RootTransform.TransformVector(direction) * _missileAbilityMetaInfo.ForceImpulse;
-            // Debug.DrawRay(context.TowerEnd.position, direction, Color.blue, 10);
             missile.Fire(force, _missileAbilityMetaInfo.TargetsMask);
         }
     }

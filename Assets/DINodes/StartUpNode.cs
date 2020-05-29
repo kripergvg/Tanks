@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Tanks.FSM;
 using Tanks.Mobs;
 using Tanks.Mobs.Brain.FSMBrain;
@@ -8,7 +9,7 @@ using Tanks.Tank;
 using Tanks.Tank.Abilities;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Random = System.Random;
 
 namespace Tanks.DI
@@ -27,6 +28,8 @@ namespace Tanks.DI
 
         public override void Init(List<SceneNode> sceneNodes)
         {
+            var logger = CreateLogger();
+            
             _deps = GetDeps(sceneNodes);
             var random = new DefaultRandom(new Random());
 
@@ -39,38 +42,55 @@ namespace Tanks.DI
             var entitiesSpawner = new EntitiesSpawner(targetLocators);
             var timeProvider = new UnityTimeProvider();
             
-            CreateTank(timeProvider, entitiesSpawner);
+            CreateTank(logger, timeProvider, entitiesSpawner);
 
             var stateMachineFactory = new StateMachineFactory();
-            var mobSpawner = CreateMobSpawner(timeProvider, entitiesSpawner, tankMobTargetLocator, stateMachineFactory, random);
+            var mobSpawner = CreateMobSpawner(logger, timeProvider, entitiesSpawner, tankMobTargetLocator, stateMachineFactory, random);
             mobSpawner.Start();
         }
 
-        private void CreateTank(UnityTimeProvider timeProvider, EntitiesSpawner entitiesSpawner)
+        private ILogger CreateLogger()
         {
-            var missilePool = new SimplePool<Missile>(5, 2, p =>
-            {
-                var missile = Instantiate(MisslePrefab);
-                missile.SetPoolOwner(p);
-                return missile;
-            });
+            var loggerFactory = LoggerFactory.Create(builder => { });
+            loggerFactory.AddProvider(new UnityLoggerProvider());
+            return loggerFactory.CreateLogger("Client");
+        }
+
+        private void CreateTank(ILogger logger, UnityTimeProvider timeProvider, EntitiesSpawner entitiesSpawner)
+        {
+            var missilePool = new SimplePool<Missile>(logger,
+                5,
+                2,
+                p =>
+                {
+                    var missile = Instantiate(MisslePrefab);
+                    missile.SetPoolOwner(p);
+                    return missile;
+                });
             var runtimeAbilityFactory = new ScriptableObjectRuntimeAbilityFactory(missilePool);
 
             var tankFactory = new TankFactory(timeProvider, entitiesSpawner, TankPrefab, _deps.AbilitiesContainer, _deps.PlayerHealth, runtimeAbilityFactory, ChangeAbilityCooldown, new InputManager());
             entitiesSpawner.Spawn<TankFactory, TankFactory, TankViewModel>(tankFactory, tankFactory, _deps.PlayerSpawnPoint.position, _deps.PlayerSpawnPoint.rotation);
         }
 
-        private MobSpawner<ZombieFactory> CreateMobSpawner(UnityTimeProvider timeProvider, EntitiesSpawner entitiesSpawner, TypeTargetLocator tankMobTargetLocator,
-            StateMachineFactory stateMachineFactory, DefaultRandom random)
+        private MobSpawner<ZombieFactory> CreateMobSpawner(ILogger logger,
+            UnityTimeProvider timeProvider,
+            EntitiesSpawner entitiesSpawner,
+            TypeTargetLocator tankMobTargetLocator,
+            StateMachineFactory stateMachineFactory,
+            DefaultRandom random)
         {
             var zombieFactories = new List<ZombieFactory>();
             foreach (var zombiePrefab in Zombies)
             {
-                var pool = new SimplePool<Zombie>(15, 10, p =>
-                {
-                    var zombie = Instantiate(zombiePrefab);
-                    return zombie;
-                });
+                var pool = new SimplePool<Zombie>(logger,
+                    15,
+                    10,
+                    p =>
+                    {
+                        var zombie = Instantiate(zombiePrefab);
+                        return zombie;
+                    });
                 var zombieFactory = new ZombieFactory(timeProvider, entitiesSpawner, tankMobTargetLocator, stateMachineFactory, _deps.Doors, pool);
                 zombieFactories.Add(zombieFactory);
             }
