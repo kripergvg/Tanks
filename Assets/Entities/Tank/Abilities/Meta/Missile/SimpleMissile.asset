@@ -18,7 +18,9 @@ MonoBehaviour:
   TargetsMask:
     serializedVersion: 2
     m_Bits: 1024
+  ShowCooldow: 1
   MissilePrefab: {fileID: 6171470304695887012, guid: 96f64fe1b74a403e91887bf011ff57c6,
     type: 3}
-  ForceImpulse: 5
-  ShotRotation: {x: -35, y: 0, z: 0}
+  ForceImpulse: 8
+  ShotRotation: {x: -30, y: 0, z: 0}
+  ShotRotationConvered: {x: -0.25881904, y: 0, z: 0, w: 0.9659258}

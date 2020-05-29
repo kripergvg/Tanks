@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Tanks.DI;
+using Tanks.DINodes;
 using Tanks.Tank;
 using UnityEngine;
 using UnityEngine.SceneManagement;

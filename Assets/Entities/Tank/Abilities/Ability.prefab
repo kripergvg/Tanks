@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 969526f4093e4e21b180c44d4331af5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconElement: {fileID: 8296960735146120288}
-  NameElement: {fileID: 6923831982891624603}
-  NotSelectedHover: {fileID: 2775624450571560946}
+  _iconElement: {fileID: 8296960735146120288}
+  _nameElement: {fileID: 6923831982891624603}
+  _notSelectedHover: {fileID: 2775624450571560946}
 --- !u!1 &2142247141720813264
 GameObject:
   m_ObjectHideFlags: 0

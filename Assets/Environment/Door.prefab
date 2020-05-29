@@ -218,8 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef543ce9241b42a0a8acf5c3ac34bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enter: {fileID: 3183371754402055282}
-  Exit: {fileID: 8225882071619514459}
+  _enter: {fileID: 3183371754402055282}
+  _exit: {fileID: 8225882071619514459}
 --- !u!65 &4695258828407810669
 BoxCollider:
   m_ObjectHideFlags: 0

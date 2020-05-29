@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tanks.DI
+namespace Tanks.Environment
 {
     public interface IDoor
     {

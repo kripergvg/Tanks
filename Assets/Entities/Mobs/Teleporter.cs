@@ -1,7 +1,8 @@
-using Tanks.DI;
+using Tanks.Environment;
+using Tanks.Mobs.Brain.FSMBrain;
 using UnityEngine;
 
-namespace Tanks.Mobs.Brain.FSMBrain
+namespace Tanks.Mobs
 {
     public class Teleporter : IPositionDetector
     {

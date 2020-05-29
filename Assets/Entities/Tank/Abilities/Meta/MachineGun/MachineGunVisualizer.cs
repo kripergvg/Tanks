@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace Entities.Tank.Abilities.Meta.MachineGun
 {
-    public interface IMachineGunVisualizer
-    {
-        void Visualize();
-    }
-
     public class MachineGunVisualizer : IMachineGunVisualizer
     {
         private readonly LineRenderer _shootRender;

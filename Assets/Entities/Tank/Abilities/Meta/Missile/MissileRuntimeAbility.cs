@@ -1,7 +1,7 @@
 using Tanks.Pool;
 using UnityEngine;
 
-namespace Tanks.Tank.Abilities
+namespace Tanks.Tank.Abilities.Missile
 {
     public class MissileRuntimeAbility : IRuntimeAbility
     {

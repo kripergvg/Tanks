@@ -1,14 +1,15 @@
 using System;
 using Tanks.Pool;
 using Tanks.Tank.Abilities.MachineGun;
+using Tanks.Tank.Abilities.Missile;
 
 namespace Tanks.Tank.Abilities
 {
     public class ScriptableObjectRuntimeAbilityFactory : IRuntimeAbilityFactory
     {
-        private readonly IPool<Missile> _misslePool;
+        private readonly IPool<Missile.Missile> _misslePool;
 
-        public ScriptableObjectRuntimeAbilityFactory(IPool<Missile> misslePool)
+        public ScriptableObjectRuntimeAbilityFactory(IPool<Missile.Missile> misslePool)
         {
             _misslePool = misslePool;
         }

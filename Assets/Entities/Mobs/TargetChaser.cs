@@ -1,4 +1,6 @@
-namespace Tanks.Mobs.Brain.FSMBrain
+using Tanks.Mobs.Brain.FSMBrain;
+
+namespace Tanks.Mobs
 {
     public class TargetChaser
     {

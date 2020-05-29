@@ -670,18 +670,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 100
   Armour: 0.2
-  Abilities:
+  _abilities:
   - {fileID: 11400000, guid: 36aaeaf187abf0c49ac209eacabcd9d8, type: 2}
   - {fileID: 11400000, guid: 71c2eae794711324c8dd6ee32c94defb, type: 2}
-  AbilityUiPrefab: {fileID: 2207456591753138383, guid: 486cc87fc4cf4934d807d65f18f25043,
+  _abilityUiPrefab: {fileID: 2207456591753138383, guid: 486cc87fc4cf4934d807d65f18f25043,
     type: 3}
-  PlayerCamera: {fileID: 963194227}
-  Speed: 2
-  RotationSpeed: 2
-  RigidBody: {fileID: 8919787911438140387}
-  TowerEnd: {fileID: 8919787912778818189}
-  MachineGunLineRenderer: {fileID: 7332211083098400090}
-  MachineGunLineDuration: 0.1
+  _playerCamera: {fileID: 963194227}
+  _speed: 2
+  _rotationSpeed: 1.4
+  _rigidBody: {fileID: 8919787911438140387}
+  _towerEnd: {fileID: 8919787912778818189}
+  _machineGunLineRenderer: {fileID: 7332211083098400090}
+  _machineGunLineDuration: 0.1
 --- !u!65 &8991590885047609847
 BoxCollider:
   m_ObjectHideFlags: 0

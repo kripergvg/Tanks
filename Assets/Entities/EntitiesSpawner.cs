@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Tanks.Mobs
 {
-    public class EntitiesSpawner : IEntityLocator, IEntityLifeManager
+    public class EntitiesSpawner :  IEntityLifeManager
     {
         private readonly List<ITargetLocator> _targetLocators;
         private readonly Dictionary<IEntity, EntityInfo> _entitiesWithInfo = new Dictionary<IEntity, EntityInfo>();
@@ -17,11 +17,6 @@ namespace Tanks.Mobs
         {
             _targetLocators = targetLocators;
             _entityDeps = new EntityDeps(this, new MainCameraStorage());
-        }
-
-        public List<IEntity> GetEntities()
-        {
-            return _entitiesForLocator;
         }
 
         public TEntity Spawn<TEntityFactory, TEntityRemover, TEntity>(TEntityFactory entityFactory,

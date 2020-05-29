@@ -1,16 +1,19 @@
 using System;
-using Tanks.DI;
+using Tanks.Environment;
 using Tanks.FSM;
+using Tanks.Mobs.Brain.FSMBrain.Context;
+using Tanks.Mobs.Brain.FSMBrain.States;
 
 namespace Tanks.Mobs.Brain.FSMBrain
 {
+    /// <summary>
+    /// State machine realization of zombie brain
+    /// </summary>
     public class FSMZombieBrain : IZombieBrain
     {
-        private readonly IEntityLocator _entityLocator;
         private readonly ITimeProvider _timeProvider;
         private readonly ITargetLocator _targetLocator;
         private readonly StateMachineFactory _stateMachineFactory;
-        private readonly IEntity _mob;
         private readonly TargetChaser _targetChaser;
         private readonly IAttacker _attacker;
         private readonly TimeSpan _attackInterval;
@@ -22,7 +25,6 @@ namespace Tanks.Mobs.Brain.FSMBrain
         public FSMZombieBrain(ITimeProvider timeProvider,
             ITargetLocator targetLocator,
             StateMachineFactory stateMachineFactory, 
-            IEntity mob,
             TargetChaser targetChaser,
             IAttacker attacker,
             TimeSpan attackInterval,
@@ -33,7 +35,6 @@ namespace Tanks.Mobs.Brain.FSMBrain
             _timeProvider = timeProvider;
             _targetLocator = targetLocator;
             _stateMachineFactory = stateMachineFactory;
-            _mob = mob;
             _targetChaser = targetChaser;
             _attacker = attacker;
             _attackInterval = attackInterval;
@@ -45,7 +46,7 @@ namespace Tanks.Mobs.Brain.FSMBrain
         public void Start()
         {
             var idleState = new IdleState();
-            var enterDoorState = new EnterDoorState(_doors, _mob, _mover);
+            var enterDoorState = new EnterDoorState(_doors, _mover);
             var followingState = new FollowingState(_targetChaser);
             var attackState = new AttackState(_timeProvider, _attackInterval, _attacker);
 

@@ -1,21 +1,20 @@
 using System;
-using Tanks.DI;
+using Tanks.Environment;
 using Tanks.FSM;
+using Tanks.Mobs.Brain.FSMBrain.Context;
 
-namespace Tanks.Mobs.Brain.FSMBrain
+namespace Tanks.Mobs.Brain.FSMBrain.States
 {
     public class EnterDoorState : StateMachine<ZombieBrainContextFactory, ZombieBrainContext,  ZombieContextUpdater, IEntity>.State
     {
         private readonly IDoor[] _doors;
-        private readonly IEntity _entity;
         private readonly IMover _mover;
 
         private IDoor _selectedDoor;
 
-        public EnterDoorState(IDoor[] doors, IEntity entity, IMover mover)
+        public EnterDoorState(IDoor[] doors, IMover mover)
         {
             _doors = doors;
-            _entity = entity;
             _mover = mover;
         }
 

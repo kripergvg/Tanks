@@ -4,14 +4,18 @@ using Tanks.Mobs;
 using Tanks.Pool;
 using UnityEngine;
 
-namespace Tanks.Tank.Abilities
+namespace Tanks.Tank.Abilities.Missile
 {
     public class Missile : MonoBehaviour, IPoolable
     {
-        public Rigidbody Body;
-        public float ExplosionRadius = 4f;
-        public float Damage = 40;
-        public float MaxLiveTime = 5;
+        [SerializeField]
+        private Rigidbody _body;
+        [SerializeField]
+        private float _explosionRadius = 4f;
+        [SerializeField]
+        private float _damage = 40;
+        [SerializeField]
+        private float _maxLiveTime = 5;
 
         private IPool<Missile> _poolOwner;
         private LayerMask _entityLayerMask;
@@ -33,23 +37,22 @@ namespace Tanks.Tank.Abilities
         public void Fire(Vector3 force, LayerMask layerMask)
         {
             _entityLayerMask = layerMask;
-            // TODO Research
-            Body.AddForce(force, ForceMode.Impulse);
+            _body.AddForce(force, ForceMode.Impulse);
 
             StartCoroutine(CheckReturnedToPool());
         }
 
         public void PoolClear()
         {
-            Body.velocity = Vector3.zero;
-            Body.angularVelocity = Vector3.zero;
+            _body.velocity = Vector3.zero;
+            _body.angularVelocity = Vector3.zero;
             _collided = false;
             gameObject.SetActive(false);
         }
 
         private IEnumerator CheckReturnedToPool()
         {
-            yield return new WaitForSeconds(MaxLiveTime);
+            yield return new WaitForSeconds(_maxLiveTime);
             ReturnToPool();
         }
 
@@ -60,15 +63,16 @@ namespace Tanks.Tank.Abilities
                 var collidersBuffer = ArrayPool<Collider>.Shared.Rent(100);
                 try
                 {
-                    var collideCount = Physics.OverlapSphereNonAlloc(transform.position, ExplosionRadius, collidersBuffer, _entityLayerMask);
+                    var collideCount = Physics.OverlapSphereNonAlloc(transform.position, _explosionRadius, collidersBuffer, _entityLayerMask);
                     for (int i = 0; i < collideCount; i++)
                     {
                         var targetCollider = collidersBuffer[i];
                         var entity = targetCollider.GetComponent<IEntity>();
 
                         var distance = Vector3.Distance(transform.position, targetCollider.transform.position);
-                        var damageMultiplier = distance / ExplosionRadius;
-                        entity.TakeDamage(Damage * damageMultiplier);
+                        var damageReductionRate = distance / _explosionRadius;
+                        var damageReduction = _damage * damageReductionRate;
+                        entity.TakeDamage(_damage - damageReduction);
                     }
 
                     _collided = true;

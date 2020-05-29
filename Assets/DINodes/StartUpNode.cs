@@ -1,27 +1,33 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Tanks.Environment;
 using Tanks.FSM;
+using Tanks.Logger;
 using Tanks.Mobs;
 using Tanks.Mobs.Brain.FSMBrain;
 using Tanks.Pool;
 using Tanks.Tank;
 using Tanks.Tank.Abilities;
+using Tanks.Tank.Abilities.Missile;
 using UnityEngine;
 using UnityEngine.UI;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Random = System.Random;
 
-namespace Tanks.DI
+namespace Tanks.DINodes
 {
     public class StartUpNode : SceneNode
     {
+        [SerializeField]
         public TankViewModel TankPrefab;
+        [SerializeField]
         public Zombie[] Zombies;
+        [SerializeField]
         public Missile MisslePrefab;
-        
+        [SerializeField]
         public int AliveZombieCount = 10;
-
+        [SerializeField]
         public float ChangeAbilityCooldown = 0.1f;
         
         private StartUpDeps _deps;

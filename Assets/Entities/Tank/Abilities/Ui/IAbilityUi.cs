@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tanks.Tank.Abilities
+namespace Tanks.Tank.Abilities.Ui
 {
     public interface IAbilityUi
     {

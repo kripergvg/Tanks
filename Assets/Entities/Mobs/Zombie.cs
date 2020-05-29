@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Tanks.DI;
+using Tanks.Environment;
 using Tanks.FSM;
 using Tanks.Mobs.Brain;
 using Tanks.Mobs.Brain.FSMBrain;
@@ -13,13 +13,18 @@ namespace Tanks.Mobs
 {
     public class Zombie : Entity, IPoolable
     {
-        public Canvas UiCanvas;
-        public Slider HealthSlider;
-        public NavMeshAgent Agent;
-
-        public float BrainUpdateInterval = 0.02f;
-        public float AttackInterval = 0.5f;
-        public int Damage = 20;
+        [SerializeField]
+        private Canvas _uiCanvas;
+        [SerializeField]
+        private Slider _healthSlider;
+        [SerializeField]
+        private NavMeshAgent _agent;
+        [SerializeField]
+        private float _brainUpdateInterval = 0.02f;
+        [SerializeField]
+        private float _attackInterval = 0.5f;
+        [SerializeField]
+        private int _damage = 20;
 
         private MainCameraStorage _cameraStorage;
         private HealthSystem _healthSystem;
@@ -34,12 +39,12 @@ namespace Tanks.Mobs
         public override Vector3 Position
         {
             get => transform.position;
-            set => Agent.Warp(value);
+            set => _agent.Warp(value);
         }
 
         private void Awake()
         {
-            _brainUpdateWait = new WaitForSeconds(BrainUpdateInterval);
+            _brainUpdateWait = new WaitForSeconds(_brainUpdateInterval);
         }
 
         public void Init(ITimeProvider timeProvider,
@@ -51,17 +56,16 @@ namespace Tanks.Mobs
         {
             _healthSystem = healthSystem;
             _cameraStorage = mainCameraStorage;
-            var mover = new NavMeshMobMover(Agent);
-            _attacker = new SimpleAttacker(Damage);
+            var mover = new NavMeshMobMover(_agent);
+            _attacker = new SimpleAttacker(_damage);
             _targetChaser = new TargetChaser(mover);
             _teleporter = new Teleporter(this);
             _brain = new FSMZombieBrain(timeProvider,
                 targetLocator,
                 stateMachineFactory,
-                this,
                 _targetChaser,
                 _attacker,
-                TimeSpan.FromSeconds(AttackInterval),
+                TimeSpan.FromSeconds(_attackInterval),
                 doors,
                 mover,
                 _teleporter);
@@ -124,11 +128,11 @@ namespace Tanks.Mobs
 
         void LateUpdate()
         {
-            HealthSlider.value = _healthSystem.GetHealthInPercent();
+            _healthSlider.value = _healthSystem.GetHealthInPercent();
 
             if (_cameraStorage.Exists())
             {
-                UiCanvas.transform.LookAt(_cameraStorage.Get().transform);
+                _uiCanvas.transform.LookAt(_cameraStorage.Get().transform);
             }
         }
 

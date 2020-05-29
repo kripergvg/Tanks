@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tanks.DI
+namespace Tanks.DINodes
 {
     public abstract class SceneNode : MonoBehaviour
     {

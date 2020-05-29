@@ -1,4 +1,4 @@
-namespace Tanks.Mobs.Brain.FSMBrain
+namespace Tanks.Mobs.Brain.FSMBrain.Context
 {
     public struct ZombieBrainContext
     {

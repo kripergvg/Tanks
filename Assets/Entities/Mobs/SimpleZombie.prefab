@@ -180,14 +180,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bca0d93e8474162418820ed1ae98e8a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
-  Armour: 0.2
-  UiCanvas: {fileID: 1660280600751171269}
-  HealthSlider: {fileID: 1660280599954163974}
-  Agent: {fileID: 1660280600537085760}
-  BrainUpdateInterval: 0
-  AttackInterval: 0.5
-  Damage: 5
+  _maxHealth: 100
+  _armour: 0.2
+  _uiCanvas: {fileID: 1660280600751171269}
+  _healthSlider: {fileID: 1660280599954163974}
+  _agent: {fileID: 1660280600537085760}
+  _brainUpdateInterval: 0.02
+  _attackInterval: 0.5
+  _damage: 5
 --- !u!136 &7179886752874712623
 CapsuleCollider:
   m_ObjectHideFlags: 0

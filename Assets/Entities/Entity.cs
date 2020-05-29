@@ -6,8 +6,10 @@ namespace Tanks.Mobs
     {
         private HealthSystem _healthSystem;
 
-        public int MaxHealth = 100;
-        public float Armour = 0.2f;
+        [SerializeField]
+        private int _maxHealth = 100;
+        [SerializeField]
+        private float _armour = 0.2f;
         
         public void Init(HealthSystem healthSystem)
         {
@@ -16,9 +18,9 @@ namespace Tanks.Mobs
 
         public abstract EntityType EntityType { get; }
         
-        int IEntity.MaxHealth => MaxHealth;
+        int IEntity.MaxHealth => _maxHealth;
 
-        float IEntity.Armour => Armour;
+        float IEntity.Armour => _armour;
         
         public virtual Vector3 Position
         {

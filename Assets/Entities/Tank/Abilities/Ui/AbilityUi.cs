@@ -1,15 +1,19 @@
 using System;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Tanks.Tank.Abilities
+namespace Tanks.Tank.Abilities.Ui
 {
     public class AbilityUi : MonoBehaviour, IAbilityUi
     {
-        public Image IconElement;
-        public TMP_Text NameElement;
-        public Image NotSelectedHover;
+        [SerializeField]
+        private Image _iconElement;
+        [SerializeField]
+        private TMP_Text _nameElement;
+        [SerializeField]
+        private Image _notSelectedHover;
         
         private float? _lastFireDate;
         private float _cooldown;
@@ -17,8 +21,8 @@ namespace Tanks.Tank.Abilities
 
         public void Init(Sprite icon, string name, float cooldown, bool showCooldown)
         {
-            IconElement.sprite = icon;
-            NameElement.text = name;
+            _iconElement.sprite = icon;
+            _nameElement.text = name;
             _cooldown = cooldown;
             _showCooldown = showCooldown;
         }
@@ -30,7 +34,7 @@ namespace Tanks.Tank.Abilities
                 if (_lastFireDate != null)
                 {
                     var timeAfterLastShoot = Time.time - _lastFireDate.Value;
-                    IconElement.fillAmount = Math.Min(1, timeAfterLastShoot / _cooldown);
+                    _iconElement.fillAmount = Math.Min(1, timeAfterLastShoot / _cooldown);
                 }
             }
         }
@@ -42,12 +46,12 @@ namespace Tanks.Tank.Abilities
 
         public void SetSelected()
         {
-            NotSelectedHover.enabled = false;
+            _notSelectedHover.enabled = false;
         }
 
         public void RemoveSelected()
         {
-            NotSelectedHover.enabled = true;
+            _notSelectedHover.enabled = true;
         }
     }
 }

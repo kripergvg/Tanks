@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using UnityEngine;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace Tanks
+namespace Tanks.Logger
 {
     public class UnityLoggerProvider : ILoggerProvider
     {
