@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tanks.Entities;
 using UnityEngine;
 
 namespace Tanks.Mobs

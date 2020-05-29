@@ -1,4 +1,4 @@
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public enum EntityType
     {

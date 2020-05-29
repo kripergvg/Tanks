@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Tanks.Entities;
 using Tanks.Environment;
 using Tanks.FSM;
 using Tanks.Logger;

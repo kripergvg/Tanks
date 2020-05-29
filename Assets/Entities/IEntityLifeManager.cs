@@ -1,7 +1,8 @@
 using System;
+using Tanks.Mobs;
 using UnityEngine;
 
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public interface IEntityLifeManager
     {

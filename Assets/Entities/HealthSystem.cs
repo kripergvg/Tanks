@@ -1,6 +1,7 @@
 using System;
+using Tanks.Entities;
 
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public class HealthSystem
     {

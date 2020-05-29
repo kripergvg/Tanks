@@ -1,5 +1,5 @@
 using Entities.Tank.Abilities.Meta.MachineGun;
-using Tanks.Mobs;
+using Tanks.Entities;
 using Tanks.Tank.Abilities;
 using Tanks.Tank.Abilities.Ui;
 using UnityEngine;

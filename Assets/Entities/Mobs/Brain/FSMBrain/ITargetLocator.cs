@@ -1,3 +1,5 @@
+using Tanks.Entities;
+
 namespace Tanks.Mobs.Brain.FSMBrain
 {
     public interface ITargetLocator

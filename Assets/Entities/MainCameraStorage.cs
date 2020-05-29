@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public class MainCameraStorage
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public abstract class Entity : MonoBehaviour, IEntity
     {

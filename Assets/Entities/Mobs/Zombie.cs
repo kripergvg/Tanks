@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Tanks.Entities;
 using Tanks.Environment;
 using Tanks.FSM;
 using Tanks.Mobs.Brain;

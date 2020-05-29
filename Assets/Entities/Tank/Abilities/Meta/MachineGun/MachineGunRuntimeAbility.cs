@@ -1,6 +1,6 @@
 using System.Buffers;
 using Entities.Tank.Abilities.Meta.MachineGun;
-using Tanks.Mobs;
+using Tanks.Entities;
 using Tanks.Tank.Abilities.MachineGun;
 using UnityEngine;
 

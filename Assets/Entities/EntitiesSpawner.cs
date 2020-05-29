@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Tanks.Mobs.Brain.FSMBrain;
 using UnityEngine;
 
-namespace Tanks.Mobs
+namespace Tanks.Entities
 {
     public class EntitiesSpawner :  IEntityLifeManager
     {
